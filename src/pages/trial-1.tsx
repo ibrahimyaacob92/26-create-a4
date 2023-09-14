@@ -1,5 +1,4 @@
 import { ReactNode, useState } from "react";
-import SplitContainer from "~/components/SplitContainer";
 import { content, contentShort } from "~/content";
 import { Allotment } from "allotment";
 import "allotment/dist/style.css";
@@ -55,7 +54,7 @@ const A4PageContainer = ({ children }: { children: ReactNode }) => {
         width: "8.3in",
         overflowY: "hidden",
       }}
-      className="  sha bg-white p-4"
+      className="bg-white p-4 shadow-md"
     >
       {children}
     </div>
