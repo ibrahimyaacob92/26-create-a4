@@ -13,6 +13,7 @@ const Page = () => {
   const [triggerPrint, setTriggerPrint] = useState(false);
   const [textHeight, setTextHeight] = useState(0);
   const [lineCount, setLineCount] = useState(0);
+  const [paginatedContent, setPaginatedContent] = useState<string[]>();
 
   const scale = a4Width ? a4Width / 800 : 1;
 
@@ -38,13 +39,16 @@ const Page = () => {
     const fontSize = 16; // Adjust to your font size
     const lineHeight = 1.5; // Adjust to your line height
 
-    const { height, lineCount } = calculateTextHeight(
+    const { height, lineCount, paginatedTexts } = calculateTextHeight(
       content,
       fontSize,
       fontSize * lineHeight,
+      undefined,
+      1100,
     );
     setTextHeight(height);
     setLineCount(lineCount);
+    setPaginatedContent(paginatedTexts ?? [content]);
   }, [content]);
 
   return (
@@ -57,7 +61,7 @@ const Page = () => {
             <p>A4 section width: {a4Width}</p>
             <p>A4 section scale: {scale}</p>
             <p>Line Count: {lineCount}</p>
-            <p>Text Height: {textHeight}</p>
+            <p>Text Height: {textHeight}px</p>
             <p>Print Mode: {printMode ? "True" : "False"}</p>
             <textarea
               className="m-2  h-[400px] w-[calc(100%-20px)] border p-2 text-sm"
@@ -92,15 +96,11 @@ const Page = () => {
                 ref={componentRef}
                 className={!printMode ? "flex flex-col gap-4" : ""}
               >
-                <A4PageContainer printMode={printMode}>
-                  {content}
-                </A4PageContainer>
-                <A4PageContainer printMode={printMode}>
-                  {contentShort}
-                </A4PageContainer>
-                <A4PageContainer printMode={printMode}>
-                  {contentShort}
-                </A4PageContainer>
+                {paginatedContent?.map((content, idx) => (
+                  <A4PageContainer printMode={printMode} key={idx}>
+                    {content}
+                  </A4PageContainer>
+                ))}
               </div>
               <br />
             </div>
@@ -125,6 +125,7 @@ const A4PageContainer = ({
     <div
       style={{
         minHeight: "11.7in",
+        maxHeight: "11.7in",
         width: "8.3in",
         overflowY: "hidden",
       }}
